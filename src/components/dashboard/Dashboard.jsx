@@ -21,13 +21,12 @@ const Dashboard = () => {
         const response = await fetch(
           `https://aws-github-backend.onrender.com/repo/user/${userId}`
         );
-
         const data = await response.json();
 
-        // ✅ Backend returns array directly
+        // ✅ FIX
         setRepositories(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error fetching user repositories:", err);
+        console.error("Error fetching repositories:", err);
         setRepositories([]);
       }
     };
@@ -37,7 +36,6 @@ const Dashboard = () => {
         const response = await fetch(
           `https://aws-github-backend.onrender.com/repo/all`
         );
-
         const data = await response.json();
 
         setSuggestedRepositories(Array.isArray(data) ? data : []);
@@ -65,9 +63,9 @@ const Dashboard = () => {
   return (
     <>
       <Navbar />
-
       <section id="dashboard">
-        {/* LEFT SIDE */}
+        
+        {/* LEFT */}
         <aside>
           <h3>Suggested Repositories</h3>
 
@@ -108,7 +106,7 @@ const Dashboard = () => {
           )}
         </main>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT */}
         <aside>
           <h3>Upcoming Events</h3>
           <ul>
@@ -117,6 +115,7 @@ const Dashboard = () => {
             <li>React Summit - Jan 5</li>
           </ul>
         </aside>
+
       </section>
     </>
   );
