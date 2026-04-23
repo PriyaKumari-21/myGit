@@ -20,7 +20,7 @@ const Signup = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("https://aws-github-backend.onrender.com//signup", {
+      const res = await axios.post("https://aws-github-backend.onrender.com/signup", {
         email,
         username,
         password,

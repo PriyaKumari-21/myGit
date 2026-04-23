@@ -14,7 +14,7 @@ const Dashboard = () => {
     const fetchRepositories = async () => {
       try {
         const response = await fetch(
-          `https://aws-github-backend.onrender.com//repo/user/${userId}`
+          `https://aws-github-backend.onrender.com/repo/user/${userId}`
         );
         const data = await response.json();
         setRepositories(data.repositories);
@@ -25,7 +25,7 @@ const Dashboard = () => {
 
     const fetchSuggestedRepositories = async () => {
       try {
-        const response = await fetch(`https://aws-github-backend.onrender.com//repo/all`);
+        const response = await fetch(`https://aws-github-backend.onrender.com/repo/all`);
         const data = await response.json();
         setSuggestedRepositories(data);
         console.log(suggestedRepositories);
