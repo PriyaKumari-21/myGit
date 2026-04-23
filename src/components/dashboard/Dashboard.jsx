@@ -11,26 +11,39 @@ const Dashboard = () => {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
 
+    if (!userId) {
+      console.warn("No userId found");
+      return;
+    }
+
     const fetchRepositories = async () => {
       try {
         const response = await fetch(
           `https://aws-github-backend.onrender.com/repo/user/${userId}`
         );
+
         const data = await response.json();
-        setRepositories(data.repositories);
+
+        // ✅ Backend returns array directly
+        setRepositories(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error while fecthing repositories: ", err);
+        console.error("Error fetching user repositories:", err);
+        setRepositories([]);
       }
     };
 
     const fetchSuggestedRepositories = async () => {
       try {
-        const response = await fetch(`https://aws-github-backend.onrender.com/repo/all`);
+        const response = await fetch(
+          `https://aws-github-backend.onrender.com/repo/all`
+        );
+
         const data = await response.json();
-        setSuggestedRepositories(data);
-        console.log(suggestedRepositories);
+
+        setSuggestedRepositories(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error while fecthing repositories: ", err);
+        console.error("Error fetching suggested repositories:", err);
+        setSuggestedRepositories([]);
       }
     };
 
@@ -39,33 +52,41 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (searchQuery == "") {
+    if (!searchQuery) {
       setSearchResults(repositories);
     } else {
-      const filteredRepo = repositories.filter((repo) =>
-        repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+      const filtered = repositories.filter((repo) =>
+        repo.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
-      setSearchResults(filteredRepo);
+      setSearchResults(filtered);
     }
   }, [searchQuery, repositories]);
 
   return (
     <>
       <Navbar />
+
       <section id="dashboard">
+        {/* LEFT SIDE */}
         <aside>
           <h3>Suggested Repositories</h3>
-          {suggestedRepositories.map((repo) => {
-            return (
+
+          {suggestedRepositories.length === 0 ? (
+            <p>No suggestions</p>
+          ) : (
+            suggestedRepositories.map((repo) => (
               <div key={repo._id}>
                 <h4>{repo.name}</h4>
-                <h4>{repo.description}</h4>
+                <p>{repo.description || "No description"}</p>
               </div>
-            );
-          })}
+            ))
+          )}
         </aside>
+
+        {/* MAIN */}
         <main>
           <h2>Your Repositories</h2>
+
           <div id="search">
             <input
               type="text"
@@ -74,27 +95,26 @@ const Dashboard = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          {searchResults.map((repo) => {
-            return (
+
+          {searchResults.length === 0 ? (
+            <p>No repositories found</p>
+          ) : (
+            searchResults.map((repo) => (
               <div key={repo._id}>
                 <h4>{repo.name}</h4>
-                <h4>{repo.description}</h4>
+                <p>{repo.description || "No description"}</p>
               </div>
-            );
-          })}
+            ))
+          )}
         </main>
+
+        {/* RIGHT SIDE */}
         <aside>
           <h3>Upcoming Events</h3>
           <ul>
-            <li>
-              <p>Tech Conference - Dec 15</p>
-            </li>
-            <li>
-              <p>Developer Meetup - Dec 25</p>
-            </li>
-            <li>
-              <p>React Summit - Jan 5</p>
-            </li>
+            <li>Tech Conference - Dec 15</li>
+            <li>Developer Meetup - Dec 25</li>
+            <li>React Summit - Jan 5</li>
           </ul>
         </aside>
       </section>
